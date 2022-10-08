@@ -1,0 +1,147 @@
+[
+    {
+        "id": "7be55345.48bebc",
+        "type": "subflow",
+        "name": "Loxone2HUE",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 327.5,
+                "y": 307,
+                "wires": [
+                    {
+                        "id": "525c492b.7ab478"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 1237.5,
+                "y": 319,
+                "wires": [
+                    {
+                        "id": "ebbc239d.76c84",
+                        "port": 0
+                    },
+                    {
+                        "id": "467ba87f.00d8e8",
+                        "port": 0
+                    },
+                    {
+                        "id": "f4bfe3ab43186064",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "color": "#DDAA99"
+    },
+    {
+        "id": "ebbc239d.76c84",
+        "type": "function",
+        "z": "7be55345.48bebc",
+        "name": "COLOR RGB",
+        "func": "msg.payload = msg.payload.replace(\"hsv(\", \"\").replace(\")\", \"\").split(\",\");\n\nvar hue = Number(msg.payload[0]) * 65500 / 360;\nvar sat = Number(msg.payload[1]) * 255 /100;\nvar bri = Number(msg.payload[2]) * 255 /100 ;\nvar time = 5; \n\nif (bri == '0') {\n  return { payload: { on: false } };\n}\n\nmsg.payload = {\"on\":true,\"bri\":bri,\"hue\":hue,\"sat\":sat,\"transitiontime\":time};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 1,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "525c492b.7ab478",
+        "type": "switch",
+        "z": "7be55345.48bebc",
+        "name": "White or Color",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "cont",
+                "v": "hsv(",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "temp(",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 500,
+        "y": 300,
+        "wires": [
+            [
+                "ebbc239d.76c84"
+            ],
+            [
+                "f4bfe3ab43186064"
+            ],
+            [
+                "467ba87f.00d8e8"
+            ]
+        ]
+    },
+    {
+        "id": "467ba87f.00d8e8",
+        "type": "function",
+        "z": "7be55345.48bebc",
+        "name": "WHITE",
+        "func": "var bri = msg.payload * 255 /100 ;\nvar time = 5;\n\nif (bri == '0') {\n  return { payload: { on: false } };\n}\n\nmsg.payload = {\"on\":true,\"bri\":bri,\"transitiontime\":time};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 1,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f4bfe3ab43186064",
+        "type": "function",
+        "z": "7be55345.48bebc",
+        "name": "COLOR Temperature",
+        "func": "msg.payload = msg.payload.replace(\"temp(\", \"\").replace(\")\", \"\").split(\",\");\nvar bri = Number(msg.payload[0]) * 255 / 100;\nvar ct = 770 - (Number(msg.payload[1])/10);\nvar time = 5; \n\nif (bri == '0') {\n  return { payload: { on: false } };\n}\n\nmsg.payload = { \"on\": true, \"ct\": ct, \"bri\": bri, \"transitiontime\": time };\nreturn msg;",
+        "outputs": 1,
+        "noerr": 1,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4213548b8c026fa6",
+        "type": "subflow:7be55345.48bebc",
+        "z": "43b4c5768d05a719",
+        "name": "",
+        "env": [],
+        "x": 970,
+        "y": 320,
+        "wires": [
+            [
+                "4ed525ed0ed01a61",
+                "521657d184664100"
+            ]
+        ]
+    }
+]
